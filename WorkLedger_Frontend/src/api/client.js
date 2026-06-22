@@ -7,7 +7,7 @@
  */
 export const USE_MOCK = false;
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
 class ApiError extends Error {
   constructor(message, status, body) {
