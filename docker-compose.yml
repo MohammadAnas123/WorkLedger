@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
     ports:
-      - '5434:5432' # Kept on 5434 to completely avoid conflict with Gym DB (5433)
+      - '5434:5432' # Avoids conflict with Gym DB (5433)
     volumes:
       - workledger-db-data:/var/lib/postgresql/data
     deploy:
@@ -26,7 +26,7 @@ services:
     container_name: workledger-backend
     restart: unless-stopped
     ports:
-      - '8081:8080' # Exposed on 8081 so it doesn't conflict with Gym Backend (8080)
+      - '8081:8080' # THIS FIXES IT: Bridges host port 8081 to container port 8080
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/workledger
       SPRING_DATASOURCE_USERNAME: postgres
@@ -45,7 +45,7 @@ services:
     container_name: workledger-frontend
     restart: unless-stopped
     ports:
-      - '5174:80' # Changed host port to 5174 so port 80 stays completely clear!
+      - '5174:80' # Bridges host port 5174 to Nginx container port 80
     depends_on:
       - backend
     deploy:
