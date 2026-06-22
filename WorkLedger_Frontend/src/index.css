@@ -384,17 +384,147 @@
 }
 
 /* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .wl-topbar-inner {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 14px 16px;
+  }
+  .wl-nav {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  .wl-main {
+    padding: 0 12px;
+  }
+  .wl-page {
+    padding: 22px 12px 60px;
+  }
+}
+
 @media (max-width: 760px) {
-  .wl-stats-row { grid-template-columns: 1fr; }
-  .wl-summary-strip { grid-template-columns: repeat(2, 1fr); }
-  .wl-report-grid { grid-template-columns: 1fr; }
-  .wl-ledger-row { grid-template-columns: 1fr; gap: 4px; padding: 12px 14px; position: relative; }
-  .wl-ledger-head { display: none; }
-  .wl-ledger-row .num { text-align: left; }
-  .wl-ledger-row::before { content: attr(data-label); }
-  .wl-row-delete { position: absolute; top: 10px; right: 10px; }
-  .wl-field-row { grid-template-columns: 1fr; }
-  .wl-worktype-grid { grid-template-columns: repeat(3, 1fr); }
-  .wl-brand-sub { display: none; }
-  .wl-nav-btn span { display: none; }
+  .wl-stats-row,
+  .wl-summary-strip,
+  .wl-report-grid {
+    grid-template-columns: 1fr;
+  }
+  .wl-topbar-inner {
+    gap: 12px;
+  }
+  .wl-page-title {
+    font-size: 24px;
+  }
+  .wl-section-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .wl-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .wl-search {
+    min-width: 0;
+    width: 100%;
+  }
+  .wl-chip-row {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+  .wl-chip {
+    white-space: nowrap;
+  }
+  .wl-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .wl-client-grid {
+    grid-template-columns: 1fr;
+  }
+  .wl-client-card {
+    padding: 16px;
+  }
+  .wl-client-card-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .wl-report-card.full {
+    grid-column: auto;
+  }
+  .wl-ledger-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 12px 14px;
+    position: relative;
+  }
+  .wl-ledger-head {
+    display: none;
+  }
+  .wl-ledger-row .num {
+    text-align: left;
+  }
+  .wl-ledger-row::before {
+    content: attr(data-label);
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .wl-row-delete {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+  .wl-field-row {
+    grid-template-columns: 1fr;
+  }
+  .wl-worktype-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .wl-receipt-head {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .wl-receipt-no {
+    margin-left: 0;
+    margin-top: 12px;
+    text-align: left;
+  }
+  .wl-receipt-bill-to {
+    grid-template-columns: 1fr;
+  }
+  .wl-receipt-paper {
+    padding: 20px;
+  }
+  .wl-receipt-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .wl-modal {
+    max-width: 100%;
+    padding: 18px;
+  }
+  .wl-client-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .wl-client-header-right {
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .wl-client-meta {
+    gap: 10px;
+  }
+  .wl-cancel-banner {
+    flex-direction: column;
+  }
+  .wl-brand-sub {
+    display: none;
+  }
+  .wl-nav-btn span {
+    display: none;
+  }
 }
