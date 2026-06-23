@@ -137,7 +137,14 @@ export default function ClientDetail({ clientId, goto, showToast, onClientChange
           <h2>{client.name}</h2>
           <div className="wl-client-meta">
             {client.phone && (
-              <span><Phone size={14} /> {client.phone}</span>
+              <a
+                href={`tel:${client.phone}`}
+                style={{ display: "flex", alignItems: "center", gap: 5, color: "inherit", textDecoration: "none" }}
+                onMouseEnter={e => e.currentTarget.style.color = "var(--rust)"}
+                onMouseLeave={e => e.currentTarget.style.color = "inherit"}
+              >
+                <Phone size={14} /> {client.phone}
+              </a>
             )}
             {client.address && (
               <span><MapPin size={14} /> {client.address}</span>
