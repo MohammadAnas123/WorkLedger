@@ -16,7 +16,8 @@ public class CorsConfig implements WebMvcConfigurer {
                 "http://localhost:4173",
                 "http://127.0.0.1:4173",
                 "http://localhost",
-                "http://127.0.0.1"
+                "http://127.0.0.1",
+                "https://workledger.apphatchery.online"
             )
             .allowedMethods("GET", "POST", "PATCH", "DELETE", "OPTIONS")
             .allowedHeaders("*")
