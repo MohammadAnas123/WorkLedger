@@ -2,6 +2,48 @@ import { useState } from "react";
 import { WORK_TYPES } from "../constants/workTypes";
 import { createClient } from "../api/clients";
 
+function DotsLoader() {
+  return (
+    <span style={{ display: "inline-flex", gap: 3, alignItems: "center" }}>
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          style={{
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
+            background: "currentColor",
+            opacity: 0.9,
+            animation: "wl-dot-bounce 1s ease-in-out infinite",
+            animationDelay: `${i * 0.18}s`,
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes wl-dot-bounce {
+          0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+          40% { transform: translateY(-4px); opacity: 1; }
+        }
+      `}</style>
+    </span>
+  );
+}
+
+// Strip country code (+91 / 0091), spaces, dashes, dots, parentheses — then check digits
+const normalizePhone = (raw) =>
+  raw
+    .trim()
+    .replace(/^(\+|00)91/, "")   // strip +91 or 0091
+    .replace(/[\s\-().]/g, "");  // strip separators
+
+const validatePhone = (raw) => {
+  if (!raw.trim()) return null; // optional field
+  const digits = normalizePhone(raw);
+  if (!/^\d+$/.test(digits)) return "Phone number should contain digits only";
+  if (digits.length < 7 || digits.length > 12) return "Enter a valid phone number (7–12 digits)";
+  return null;
+};
+
 export default function NewClientForm({ goto, onCreated }) {
   const [form, setForm] = useState({
     name: "", phone: "", address: "", workType: "interior", notes: "",
@@ -14,17 +56,19 @@ export default function NewClientForm({ goto, onCreated }) {
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = "Client name is required";
-    if (form.phone && !/^\d{7,15}$/.test(form.phone.replace(/\s+/g, "")))
-      e.phone = "Enter a valid phone number";
+    const phoneErr = validatePhone(form.phone);
+    if (phoneErr) e.phone = phoneErr;
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const submit = async (e) => {
-    e.preventDefault();
+  const submit = async (ev) => {
+    ev.preventDefault();
     if (!validate()) return;
     setSaving(true);
-    const c = await createClient(form);
+    // Save normalized phone so +91 / spaces don't persist in DB
+    const payload = { ...form, phone: form.phone ? normalizePhone(form.phone) : "" };
+    const c = await createClient(payload);
     setSaving(false);
     onCreated(c);
   };
@@ -101,8 +145,13 @@ export default function NewClientForm({ goto, onCreated }) {
           <button type="button" className="wl-btn wl-btn-ghost" onClick={() => goto("dashboard")}>
             Cancel
           </button>
-          <button type="submit" className="wl-btn wl-btn-primary" disabled={saving}>
-            {saving ? "Adding…" : "Add client"}
+          <button
+            type="submit"
+            className="wl-btn wl-btn-primary"
+            disabled={saving}
+            style={{ minWidth: 120, opacity: saving ? 0.85 : 1 }}
+          >
+            {saving ? <> Adding <DotsLoader /> </> : "Add client"}
           </button>
         </div>
       </form>
