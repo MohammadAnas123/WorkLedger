@@ -16,6 +16,33 @@ import { getClient, updateClient } from "../api/clients";
 import { listMaterials, addMaterial, deleteMaterial } from "../api/materials";
 import { listLabour, addLabour, deleteLabour } from "../api/labour";
 
+function DotsLoader() {
+  return (
+    <span style={{ display: "inline-flex", gap: 3, alignItems: "center" }}>
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          style={{
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
+            background: "currentColor",
+            opacity: 0.9,
+            animation: "wl-dot-bounce 1s ease-in-out infinite",
+            animationDelay: `${i * 0.18}s`,
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes wl-dot-bounce {
+          0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+          40% { transform: translateY(-4px); opacity: 1; }
+        }
+      `}</style>
+    </span>
+  );
+}
+
 export default function ClientDetail({ clientId, goto, showToast, onClientChanged }) {
   const [client, setClient] = useState(null);
   const [materials, setMaterials] = useState([]);
@@ -25,6 +52,7 @@ export default function ClientDetail({ clientId, goto, showToast, onClientChange
   const [showLabourModal, setShowLabourModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [togglingStatus, setTogglingStatus] = useState(false);
 
   const load = async () => {
     const [c, mats, lab] = await Promise.all([
@@ -53,9 +81,11 @@ export default function ClientDetail({ clientId, goto, showToast, onClientChange
   const isCompleted = client.status === "completed";
 
   const toggleCompleted = async () => {
+    setTogglingStatus(true);
     await updateClient(clientId, { status: isCompleted ? "in_progress" : "completed" });
     await load();
     onClientChanged();
+    setTogglingStatus(false);
   };
 
   const reopenJob = async () => {
@@ -118,15 +148,27 @@ export default function ClientDetail({ clientId, goto, showToast, onClientChange
         </div>
         {!isCancelled && (
           <div className="wl-client-header-right">
-            <button className="wl-btn wl-btn-danger-outline" onClick={() => setShowCancelModal(true)}>
-              <Ban size={16} /> Close job
-            </button>
+            {!isCompleted && (
+              <button className="wl-btn wl-btn-danger-outline" onClick={() => setShowCancelModal(true)}>
+                <Ban size={16} /> Close job
+              </button>
+            )}
             <button
-              className={"wl-btn " + (isCompleted ? "wl-btn-ghost" : "wl-btn-secondary")}
+              className={"wl-btn " + (isCompleted ? "wl-btn-primary" : "wl-btn-secondary")}
               onClick={toggleCompleted}
+              disabled={togglingStatus}
+              style={{ minWidth: 170, opacity: togglingStatus ? 0.85 : 1 }}
             >
-              <Check size={16} />
-              {isCompleted ? "Reopen job" : "Mark completed"}
+              {togglingStatus ? (
+                <>
+                  {isCompleted ? "Reopening" : "Marking completed"} <DotsLoader />
+                </>
+              ) : (
+                <>
+                  {isCompleted ? <RotateCcw size={16} /> : <Check size={16} />}
+                  {isCompleted ? "Reopen job" : "Mark completed"}
+                </>
+              )}
             </button>
           </div>
         )}
