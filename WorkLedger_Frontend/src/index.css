@@ -532,4 +532,7 @@
     padding: 7px 10px;           /* tighter padding on mobile */
     font-size: 13px;
   }
+  .wl-stats-row.reports-row {
+    grid-template-columns: 1fr 1fr;
+  }
 }
