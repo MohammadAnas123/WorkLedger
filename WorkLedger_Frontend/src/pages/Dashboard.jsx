@@ -8,7 +8,7 @@ import { getDashboardMonthStats } from "../api/dashboard";
 
 export default function Dashboard({ clients, goto }) {
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("in_progress");
   const [monthStats, setMonthStats] = useState(null);
 
   useEffect(() => {
@@ -68,10 +68,10 @@ export default function Dashboard({ clients, goto }) {
         </div>
         <div className="wl-chip-row">
           {[
-            { key: "all", label: "All" },
             { key: "in_progress", label: "In progress" },
             { key: "completed", label: "Completed" },
             { key: "cancelled", label: "Cancelled" },
+            { key: "all", label: "All" },
           ].map((f) => (
             <button
               key={f.key}
