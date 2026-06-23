@@ -27,7 +27,20 @@ export default function ClientCard({ client, onOpen }) {
         <span className="wl-worktype-tag" style={{ "--tag-color": meta.color }}>
           <Icon size={13} /> {meta.label}
         </span>
-        <span className={"wl-status-dot " + client.status} />
+        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <span className={"wl-status-dot " + client.status} />
+          <span style={{
+            fontSize: 12,
+            fontWeight: 600,
+            color: client.status === "completed" ? "var(--green)"
+                 : client.status === "in_progress" ? "var(--rust)"
+                 : client.status === "cancelled" ? "#B23A2E"
+                 : "var(--stone)",
+            textTransform: "capitalize",
+          }}>
+            {client.status.replace("_", " ")}
+          </span>
+        </span>
       </div>
       <h3>{client.name}</h3>
       {isCancelled ? (
