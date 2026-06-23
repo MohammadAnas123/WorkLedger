@@ -386,14 +386,15 @@
 /* ---------- responsive ---------- */
 @media (max-width: 900px) {
   .wl-topbar-inner {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;           /* ← was: wrap */
     justify-content: space-between;
     padding: 14px 16px;
+    gap: 8px;
   }
   .wl-nav {
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+    /* ← remove width: 100% and flex-wrap: wrap */
+    justify-content: flex-end;
+    flex-shrink: 0;
   }
   .wl-main {
     padding: 0 12px;
@@ -525,6 +526,10 @@
     display: none;
   }
   .wl-nav-btn span {
-    display: none;
+    display: inline;             /* ← was: none */
+  }
+  .wl-nav-btn {
+    padding: 7px 10px;           /* tighter padding on mobile */
+    font-size: 13px;
   }
 }
