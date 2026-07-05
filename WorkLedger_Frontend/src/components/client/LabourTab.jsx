@@ -22,6 +22,7 @@ export default function LabourTab({ labour, onAdd, onDelete }) {
           <div className="wl-ledger-row wl-ledger-head">
             <span>Description</span>
             <span>Date</span>
+            <span>Type</span>
             <span className="num">Amount</span>
             <span></span>
           </div>
@@ -29,6 +30,7 @@ export default function LabourTab({ labour, onAdd, onDelete }) {
             <div className="wl-ledger-row" key={l.id}>
               <span className="wl-ledger-primary">{l.description}</span>
               <span className="wl-ledger-muted">{l.date}</span>
+              <span className="wl-ledger-muted">{l.labourType === "self" ? "Self" : "Hired"}</span>
               <span className="num wl-ledger-strong">{fmt(l.amount)}</span>
               <button className="wl-row-delete" onClick={() => onDelete(l.id)} aria-label="Remove">
                 <Trash2 size={15} />

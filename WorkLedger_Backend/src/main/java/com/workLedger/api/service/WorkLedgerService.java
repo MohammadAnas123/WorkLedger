@@ -134,6 +134,7 @@ public class WorkLedgerService {
         ensureClientExists(clientId);
         String description = getString(payload, "description");
         Double amount = getDouble(payload, "amount");
+        String labourType = normalizeLabourType(getString(payload, "labourType"));
 
         if (description == null || description.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Description is required");
@@ -142,7 +143,7 @@ public class WorkLedgerService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount must be a positive number");
         }
 
-        LabourEntity entity = new LabourEntity(uuid(), clientId, description, amount, LocalDate.now());
+        LabourEntity entity = new LabourEntity(uuid(), clientId, description, amount, LocalDate.now(), labourType);
         return toLabour(labourRepository.save(entity));
     }
 
@@ -209,9 +210,17 @@ public class WorkLedgerService {
         double materialCustomer = entries.materials().stream().mapToDouble(m -> m.getRealPrice() + m.getCommission()).sum();
         double materialProfit = entries.materials().stream().mapToDouble(MaterialEntity::getCommission).sum();
         double labourTotal = entries.labour().stream().mapToDouble(LabourEntity::getAmount).sum();
+        double selfLabourProfit = entries.labour().stream()
+            .filter(this::isSelfLabour)
+            .mapToDouble(LabourEntity::getAmount)
+            .sum();
+        double hiredLabourCost = entries.labour().stream()
+            .filter(labour -> !isSelfLabour(labour))
+            .mapToDouble(LabourEntity::getAmount)
+            .sum();
         double materialCost = entries.materials().stream().mapToDouble(MaterialEntity::getRealPrice).sum();
         int cancelledJobs = cancelledClientsInRange(from, to);
-        return new ReportSummary(materialCustomer + labourTotal, materialProfit, materialCost, labourTotal, cancelledJobs);
+        return new ReportSummary(materialCustomer + labourTotal, materialProfit + selfLabourProfit, materialCost, hiredLabourCost, cancelledJobs);
     }
 
     public List<ReportClientDto> getReportByClient(LocalDate from, LocalDate to) {
@@ -231,7 +240,11 @@ public class WorkLedgerService {
                     return null;
                 }
                 double revenue = clientMaterials.stream().mapToDouble(m -> m.getRealPrice() + m.getCommission()).sum() + clientLabour.stream().mapToDouble(LabourEntity::getAmount).sum();
-                double profit = clientMaterials.stream().mapToDouble(MaterialEntity::getCommission).sum();
+                double profit = clientMaterials.stream().mapToDouble(MaterialEntity::getCommission).sum()
+                    + clientLabour.stream()
+                        .filter(this::isSelfLabour)
+                        .mapToDouble(LabourEntity::getAmount)
+                        .sum();
                 return new ReportClientDto(client.getId(), client.getName(), client.getWorkType(), revenue, profit);
             })
             .filter(dto -> dto != null)
@@ -370,7 +383,8 @@ public class WorkLedgerService {
             entity.getClientId(),
             entity.getDescription(),
             entity.getAmount(),
-            entity.getDate()
+            entity.getDate(),
+            entity.getLabourType()
         );
     }
 
@@ -382,6 +396,17 @@ public class WorkLedgerService {
 
     private String uuid() {
         return UUID.randomUUID().toString();
+    }
+
+    private String normalizeLabourType(String labourType) {
+        if ("self".equalsIgnoreCase(labourType)) {
+            return "self";
+        }
+        return "hired";
+    }
+
+    private boolean isSelfLabour(LabourEntity labour) {
+        return "self".equalsIgnoreCase(labour.getLabourType());
     }
 
     private ResponseStatusException notFound(String message) {

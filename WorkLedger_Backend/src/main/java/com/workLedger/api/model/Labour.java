@@ -8,5 +8,6 @@ public record Labour(
     String clientId,
     String description,
     Double amount,
-    @JsonFormat(pattern = "yyyy-MM-dd") LocalDate date
+    @JsonFormat(pattern = "yyyy-MM-dd") LocalDate date,
+    String labourType
 ) {}

@@ -20,15 +20,23 @@ public class LabourEntity {
     private Double amount;
     private LocalDate date;
 
+    @Column(name = "labour_type")
+    private String labourType;
+
     public LabourEntity() {
     }
 
     public LabourEntity(String id, String clientId, String description, Double amount, LocalDate date) {
+        this(id, clientId, description, amount, date, "hired");
+    }
+
+    public LabourEntity(String id, String clientId, String description, Double amount, LocalDate date, String labourType) {
         this.id = id;
         this.clientId = clientId;
         this.description = description;
         this.amount = amount;
         this.date = date;
+        this.labourType = normalizeLabourType(labourType);
     }
 
     public String getId() {
@@ -69,5 +77,20 @@ public class LabourEntity {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getLabourType() {
+        return labourType;
+    }
+
+    public void setLabourType(String labourType) {
+        this.labourType = normalizeLabourType(labourType);
+    }
+
+    private String normalizeLabourType(String labourType) {
+        if ("self".equalsIgnoreCase(labourType)) {
+            return "self";
+        }
+        return "hired";
     }
 }
