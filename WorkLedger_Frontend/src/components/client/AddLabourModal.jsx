@@ -2,7 +2,7 @@ import { useState } from "react";
 import ModalShell from "../common/ModalShell";
 
 export default function AddLabourModal({ onClose, onSave }) {
-  const [form, setForm] = useState({ description: "", amount: "", labourType: "hired" });
+  const [form, setForm] = useState({ description: "", amount: "", labourType: "self" });
   const [error, setError] = useState("");
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
