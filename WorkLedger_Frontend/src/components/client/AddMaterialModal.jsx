@@ -4,24 +4,28 @@ import { fmt } from "../../utils/format";
 
 export default function AddMaterialModal({ onClose, onSave }) {
   const [form, setForm] = useState({
-    itemName: "", shopName: "", quantity: 1, unit: "pcs", realPrice: "", commission: "",
+    itemName: "", shopName: "", quantity: 1, unit: "pcs", realPrice: "", customerPrice: "",
   });
   const [error, setError] = useState("");
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
-  const customerPrice = (Number(form.realPrice) || 0) + (Number(form.commission) || 0);
+  const realPriceNumber = Number(form.realPrice) || 0;
+  const customerPrice = Number(form.customerPrice) || 0;
+  const commission = customerPrice - realPriceNumber;
 
   const save = (e) => {
     e.preventDefault();
     if (!form.itemName.trim()) return setError("Item name is required");
-    if (!form.realPrice || Number(form.realPrice) <= 0) return setError("Enter the real price you paid");
+    if (!form.realPrice || realPriceNumber <= 0) return setError("Enter the real price you paid");
+    if (!form.customerPrice || customerPrice <= 0) return setError("Enter the customer price");
+    if (customerPrice < realPriceNumber) return setError("Customer price must be equal or higher than the real price");
     onSave({
       itemName: form.itemName.trim(),
       shopName: form.shopName.trim(),
       quantity: Number(form.quantity) || 1,
       unit: form.unit,
-      realPrice: Number(form.realPrice),
-      commission: Number(form.commission) || 0,
+      realPrice: realPriceNumber,
+      customerPrice,
     });
   };
 
@@ -77,19 +81,19 @@ export default function AddMaterialModal({ onClose, onSave }) {
             />
           </label>
           <label className="wl-field">
-            <span>Your commission</span>
+            <span>Customer price *</span>
             <input
               type="number" min="0" inputMode="decimal"
-              value={form.commission}
-              onChange={(e) => set("commission", e.target.value)}
+              value={form.customerPrice}
+              onChange={(e) => set("customerPrice", e.target.value)}
               placeholder="0"
             />
           </label>
         </div>
 
         <div className="wl-calc-preview">
-          <span>Customer will be charged</span>
-          <strong>{fmt(customerPrice)}</strong>
+          <span>Your commission</span>
+          <strong>{fmt(commission)}</strong>
         </div>
 
         {error && <span className="wl-error">{error}</span>}

@@ -134,7 +134,6 @@ export default function ReceiptView({ clientId, goto }) {
 
         <footer className="wl-receipt-foot">
           <p>Thank you for trusting us with your work.</p>
-          <p className="wl-receipt-stamp">PAID</p>
         </footer>
       </div>
     </div>

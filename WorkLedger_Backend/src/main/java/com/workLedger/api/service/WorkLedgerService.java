@@ -1,5 +1,20 @@
 package com.workLedger.api.service;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.workLedger.api.model.Client;
 import com.workLedger.api.model.ClientEntity;
 import com.workLedger.api.model.Labour;
@@ -12,20 +27,6 @@ import com.workLedger.api.model.ReportWorkTypeDto;
 import com.workLedger.api.repository.ClientRepository;
 import com.workLedger.api.repository.LabourRepository;
 import com.workLedger.api.repository.MaterialRepository;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class WorkLedgerService {
@@ -169,7 +170,7 @@ public class WorkLedgerService {
         Integer quantity = getInteger(payload, "quantity");
         String unit = getString(payload, "unit");
         Double realPrice = getDouble(payload, "realPrice");
-        Double commission = getDouble(payload, "commission");
+        Double customerPrice = getDouble(payload, "customerPrice");
 
         if (itemName == null || itemName.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Item name is required");
@@ -177,16 +178,20 @@ public class WorkLedgerService {
         if (realPrice == null || realPrice <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Real price must be a positive number");
         }
+        if (customerPrice == null || customerPrice <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Customer price must be a positive number");
+        }
+        if (customerPrice < realPrice) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Customer price must be equal or higher than real price");
+        }
         if (quantity == null || quantity <= 0) {
             quantity = 1;
         }
         if (unit == null || unit.isBlank()) {
             unit = "pcs";
         }
-        if (commission == null) {
-            commission = 0.0;
-        }
 
+        Double commission = customerPrice - realPrice;
         MaterialEntity entity = new MaterialEntity(uuid(), clientId, itemName, shopName, quantity, unit, realPrice, commission, LocalDate.now());
         return toMaterial(materialRepository.save(entity));
     }
