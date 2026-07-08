@@ -1,0 +1,16 @@
+{
+  "name": "Work Ledger",
+  "short_name": "WorkLedger",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/WorkLedger_Logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

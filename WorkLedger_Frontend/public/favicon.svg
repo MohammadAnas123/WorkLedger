@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Work Ledger icon">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#bg)"/>
+  <rect x="16" y="16" width="32" height="32" rx="7" fill="#ffffff"/>
+  <path d="M22 24h14" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M22 30h10" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M22 36h7" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M42 20v10" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <path d="M38 25h10" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="44" cy="40" r="5" fill="#22c55e"/>
+</svg>
